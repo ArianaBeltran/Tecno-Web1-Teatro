@@ -1,0 +1,39 @@
+/* Reset universal y Box Model */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-title);
+  color: var(--color-secondary);
+  line-height: 1.2;
+}
+
+a { color: var(--color-secondary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+img, video { max-width: 100%; display: block; }
+
+ul { list-style: none; }
+
+:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* Enlace de salto para accesibilidad */
+.skip-link {
+  position: absolute;
+  left: -999px;
+  background: var(--color-secondary);
+  color: #000;
+  padding: var(--space-sm) var(--space-md);
+}
+.skip-link:focus { left: var(--space-md); top: var(--space-sm); z-index: 100; }

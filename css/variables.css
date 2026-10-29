@@ -1,0 +1,27 @@
+/* Tokens de diseño — Teatro UCB */
+:root {
+  /* Colores */
+  --color-bg: #121212;          /* Fondo nocturno */
+  --color-primary: #800020;     /* Telón borgoña */
+  --color-secondary: #D4AF37;   /* Dorado acento */
+  --color-surface: #1e1e1e;     /* Tarjetas y paneles */
+  --color-text: #f5f0e6;
+  --color-text-muted: #b8b2a3;
+
+  /* Estados de butacas (RF-02) */
+  --seat-available: #2e7d32;
+  --seat-occupied: #5a5a5a;
+  --seat-selected: var(--color-secondary);
+
+  /* Tipografía */
+  --font-main: 'Arial', sans-serif;
+  --font-title: Georgia, 'Times New Roman', serif;
+
+  /* Espaciado y forma */
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+  --radius: 8px;
+  --max-width: 1100px;
+}
