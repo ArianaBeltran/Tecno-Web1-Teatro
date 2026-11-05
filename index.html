@@ -33,11 +33,152 @@
       </div>
     </section>
 
-    <!-- RF-01 -->
+        <!-- RF-01: Cartelera Teatral -->
     <section id="cartelera" class="section" aria-labelledby="cartelera-titulo">
       <div class="container">
         <h2 id="cartelera-titulo" class="section__title">Cartelera Teatral</h2>
-        <p>Próximamente: obras con fechas, sinopsis, dramaturgos y avances en video.</p>
+        <p class="section__intro">
+          Cuatro obras en escena esta temporada. Filtra por género, lee la sinopsis
+          y mira el avance antes de reservar tus butacas.
+        </p>
+
+        <div class="filtros" role="group" aria-label="Filtrar obras por género">
+          <button type="button" class="chip is-active" data-filtro="todas" aria-pressed="true">Todas</button>
+          <button type="button" class="chip" data-filtro="tragedia" aria-pressed="false">Tragedia</button>
+          <button type="button" class="chip" data-filtro="drama" aria-pressed="false">Drama</button>
+          <button type="button" class="chip" data-filtro="comedia" aria-pressed="false">Comedia</button>
+        </div>
+
+        <div class="cartelera-grid">
+
+          <!-- Obra 1 -->
+          <article class="obra card reveal" data-genero="tragedia">
+            <figure class="obra__poster obra__poster--1">
+              <span class="obra__emoji" aria-hidden="true">🏠</span>
+              <figcaption class="obra__genero">Tragedia</figcaption>
+            </figure>
+            <header class="obra__header">
+              <h3>La casa de Bernarda Alba</h3>
+              <p class="obra__autor">de Federico García Lorca</p>
+              <p class="obra__proxima" data-proxima></p>
+            </header>
+            <ul class="funciones" aria-label="Funciones de La casa de Bernarda Alba">
+              <li><time datetime="2026-11-13T19:30">Vie 13 nov · 19:30</time></li>
+              <li><time datetime="2026-11-14T19:30">Sáb 14 nov · 19:30</time></li>
+              <li><time datetime="2026-11-15T18:00">Dom 15 nov · 18:00</time></li>
+            </ul>
+            <details name="obra-1">
+              <summary>Sinopsis</summary>
+              <p>Tras la muerte de su marido, Bernarda impone ocho años de luto riguroso
+                a sus cinco hijas. El encierro, las apariencias y el deseo de libertad
+                chocan hasta desencadenar un desenlace inevitable.</p>
+            </details>
+            <details name="obra-1">
+              <summary>Avance en video</summary>
+              <video controls preload="none" playsinline>
+                <source src="assets/videos/bernarda-alba.mp4" type="video/mp4">
+                Tu navegador no soporta video HTML5.
+              </video>
+            </details>
+            <a class="btn" href="#reserva" data-obra="La casa de Bernarda Alba">Reservar butacas</a>
+          </article>
+
+          <!-- Obra 2 -->
+          <article class="obra card reveal" data-genero="tragedia">
+            <figure class="obra__poster obra__poster--2">
+              <span class="obra__emoji" aria-hidden="true">💀</span>
+              <figcaption class="obra__genero">Tragedia</figcaption>
+            </figure>
+            <header class="obra__header">
+              <h3>Hamlet</h3>
+              <p class="obra__autor">de William Shakespeare</p>
+              <p class="obra__proxima" data-proxima></p>
+            </header>
+            <ul class="funciones" aria-label="Funciones de Hamlet">
+              <li><time datetime="2026-11-20T20:00">Vie 20 nov · 20:00</time></li>
+              <li><time datetime="2026-11-21T20:00">Sáb 21 nov · 20:00</time></li>
+              <li><time datetime="2026-11-22T18:00">Dom 22 nov · 18:00</time></li>
+            </ul>
+            <details name="obra-2">
+              <summary>Sinopsis</summary>
+              <p>El príncipe de Dinamarca descubre que su padre fue asesinado por su
+                propio tío. Entre la duda, la fingida locura y la venganza, Hamlet
+                enfrenta la pregunta más antigua del teatro: actuar o no actuar.</p>
+            </details>
+            <details name="obra-2">
+              <summary>Avance en video</summary>
+              <video controls preload="none" playsinline>
+                <source src="assets/videos/hamlet.mp4" type="video/mp4">
+                Tu navegador no soporta video HTML5.
+              </video>
+            </details>
+            <a class="btn" href="#reserva" data-obra="Hamlet">Reservar butacas</a>
+          </article>
+
+          <!-- Obra 3 -->
+          <article class="obra card reveal" data-genero="drama">
+            <figure class="obra__poster obra__poster--3">
+              <span class="obra__emoji" aria-hidden="true">🚪</span>
+              <figcaption class="obra__genero">Drama</figcaption>
+            </figure>
+            <header class="obra__header">
+              <h3>Casa de muñecas</h3>
+              <p class="obra__autor">de Henrik Ibsen</p>
+              <p class="obra__proxima" data-proxima></p>
+            </header>
+            <ul class="funciones" aria-label="Funciones de Casa de muñecas">
+              <li><time datetime="2026-11-27T19:30">Vie 27 nov · 19:30</time></li>
+              <li><time datetime="2026-11-28T19:30">Sáb 28 nov · 19:30</time></li>
+            </ul>
+            <details name="obra-3">
+              <summary>Sinopsis</summary>
+              <p>Nora vive como la esposa ideal hasta que un secreto del pasado sale a
+                la luz. Su decisión final desafió las normas de su época y sigue
+                generando debate hoy.</p>
+            </details>
+            <details name="obra-3">
+              <summary>Avance en video</summary>
+              <video controls preload="none" playsinline>
+                <source src="assets/videos/casa-de-munecas.mp4" type="video/mp4">
+                Tu navegador no soporta video HTML5.
+              </video>
+            </details>
+            <a class="btn" href="#reserva" data-obra="Casa de muñecas">Reservar butacas</a>
+          </article>
+
+          <!-- Obra 4 -->
+          <article class="obra card reveal" data-genero="comedia">
+            <figure class="obra__poster obra__poster--4">
+              <span class="obra__emoji" aria-hidden="true">💰</span>
+              <figcaption class="obra__genero">Comedia</figcaption>
+            </figure>
+            <header class="obra__header">
+              <h3>El avaro</h3>
+              <p class="obra__autor">de Molière</p>
+              <p class="obra__proxima" data-proxima></p>
+            </header>
+            <ul class="funciones" aria-label="Funciones de El avaro">
+              <li><time datetime="2026-12-04T19:30">Vie 4 dic · 19:30</time></li>
+              <li><time datetime="2026-12-05T19:30">Sáb 5 dic · 19:30</time></li>
+              <li><time datetime="2026-12-06T18:00">Dom 6 dic · 18:00</time></li>
+            </ul>
+            <details name="obra-4">
+              <summary>Sinopsis</summary>
+              <p>Harpagón ama su dinero por encima de todo, incluso de sus hijos. Sus
+                intentos de casarlos por conveniencia desatan enredos, disfraces y
+                una carcajada tras otra.</p>
+            </details>
+            <details name="obra-4">
+              <summary>Avance en video</summary>
+              <video controls preload="none" playsinline>
+                <source src="assets/videos/el-avaro.mp4" type="video/mp4">
+                Tu navegador no soporta video HTML5.
+              </video>
+            </details>
+            <a class="btn" href="#reserva" data-obra="El avaro">Reservar butacas</a>
+          </article>
+
+        </div>
       </div>
     </section>
 

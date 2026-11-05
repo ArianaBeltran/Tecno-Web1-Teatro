@@ -24,4 +24,8 @@
   --space-xl: 4rem;
   --radius: 8px;
   --max-width: 1100px;
+
+    /* Efectos */
+  --shadow-gold: 0 8px 24px rgba(212, 175, 55, 0.18);
+  --transition: 0.3s ease;
 }
