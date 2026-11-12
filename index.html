@@ -177,16 +177,110 @@
             </details>
             <a class="btn" href="#reserva" data-obra="El avaro">Reservar butacas</a>
           </article>
-
+                  <!-- Obra 5 -->
+          <article class="obra card reveal" data-genero="romance">
+            <figure class="obra__poster obra__poster--5">
+              <span class="obra__emoji" aria-hidden="true">🦢</span>
+              <figcaption class="obra__genero">Romance</figcaption>
+            </figure>
+            <header class="obra__header">
+              <h3>Orgullo y Prejuicio</h3>
+              <p class="obra__autor">de Jane Austen</p>
+              <p class="obra__proxima" data-proxima></p>
+            </header>
+            <ul class="funciones" aria-label="Funciones de Orgullo y Prejuicio">
+              <li><time datetime="2026-11-27T19:30">Jue 26 nov · 14:30</time></li>
+              <li><time datetime="2026-11-28T19:30">Sáb 28 nov · 19:30</time></li>
+            </ul>
+            <details name="obra-3">
+              <summary>Sinopsis</summary>
+              <p>narra la historia de Elizabeth Bennet y Fitzwilliam Darcy en la Inglaterra 
+                rural del siglo XIX. La obra explora las convenciones sociales, las limitaciones 
+                de las mujeres y cómo el orgullo y las falsas primeras impresiones pueden nublar el juicio.</p>
+            </details>
+            <details name="obra-5">
+              <summary>Avance en video</summary>
+              <video controls preload="none" playsinline>
+                <source src="assets/videos/orgullo-y-prejuicio.mp4" type="video/mp4">
+                Tu navegador no soporta video HTML5.
+              </video>
+            </details>
+            <a class="btn" href="#reserva" data-obra="Orgullo y Prejuicio">Reservar butacas</a>
+          </article>
         </div>
       </div>
     </section>
 
     <!-- RF-02 -->
+        <!-- RF-02: Reserva de Entradas y Mapa de Sillas -->
     <section id="reserva" class="section" aria-labelledby="reserva-titulo">
       <div class="container">
         <h2 id="reserva-titulo" class="section__title">Reserva de Entradas</h2>
-        <p>Próximamente: mapa interactivo de butacas.</p>
+        <p class="section__intro">
+          Elige la obra y la función, y selecciona tus butacas directamente en el
+          mapa del teatro (máximo 6 por reserva).
+        </p>
+
+        <form id="form-reserva" class="reserva" novalidate>
+          <div class="reserva__selectores">
+            <div class="campo">
+              <label for="sel-obra">Obra</label>
+              <select id="sel-obra" name="obra" required></select>
+            </div>
+            <div class="campo">
+              <label for="sel-funcion">Función</label>
+              <select id="sel-funcion" name="funcion" required></select>
+            </div>
+          </div>
+
+          <div class="reserva__layout">
+            <div class="reserva__mapa">
+              <div class="escenario" aria-hidden="true">Escenario</div>
+              <div id="mapa-sillas" class="mapa" role="group" aria-label="Mapa de butacas"></div>
+
+              <ul class="leyenda" aria-label="Leyenda del mapa">
+                <li><span class="seat seat--muestra seat--disponible" aria-hidden="true"></span> Disponible</li>
+                <li><span class="seat seat--muestra seat--seleccionada" aria-hidden="true"></span> Seleccionada</li>
+                <li><span class="seat seat--muestra seat--ocupada" aria-hidden="true">✕</span> Ocupada</li>
+              </ul>
+
+              <ul class="zonas" aria-label="Precios por zona">
+                <li><strong>Platea VIP</strong> (filas A–B): Bs 80</li>
+                <li><strong>Platea</strong> (filas C–F): Bs 60</li>
+                <li><strong>Balcón</strong> (filas G–H): Bs 40</li>
+              </ul>
+            </div>
+
+            <aside class="reserva__resumen card" aria-labelledby="resumen-titulo">
+              <h3 id="resumen-titulo">Tu reserva</h3>
+              <p class="resumen__obra" id="resumen-obra"></p>
+              <p class="resumen__funcion" id="resumen-funcion"></p>
+
+              <ul id="resumen-lista" class="resumen__lista" aria-label="Butacas seleccionadas"></ul>
+
+              <p class="resumen__total">Total: <strong id="resumen-total">Bs 0</strong></p>
+
+              <div class="campo">
+                <label for="nombre">Nombre completo</label>
+                <input id="nombre" name="nombre" type="text" required minlength="3"
+                       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü ]{3,60}" autocomplete="name"
+                       placeholder="Ej: María Pérez" aria-describedby="error-nombre">
+                <p class="campo__error" id="error-nombre" hidden></p>
+              </div>
+
+              <div class="resumen__acciones">
+                <button type="submit" class="btn" id="btn-confirmar" disabled>Confirmar reserva</button>
+                <button type="button" class="btn btn--outline" id="btn-limpiar" disabled>Limpiar</button>
+              </div>
+
+              <p id="resumen-estado" class="resumen__estado" role="status" aria-live="polite"></p>
+
+              <button type="button" class="enlace" id="btn-reiniciar">
+                Reiniciar reservas de esta función (demo)
+              </button>
+            </aside>
+          </div>
+        </form>
       </div>
     </section>
 
