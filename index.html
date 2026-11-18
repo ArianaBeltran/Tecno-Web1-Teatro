@@ -5,36 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Portal de la Compañía de Teatro UCB: cartelera, reserva de butacas, archivo histórico y talleres.">
   <title>Teatro UCB | Cartelera y Reservas</title>
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#800020">
+  <meta property="og:title" content="Teatro UCB | Cartelera y Reservas">
+  <meta property="og:description" content="Cartelera, reserva de butacas, galería y talleres de la Compañía de Teatro UCB.">
+  <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family
+  =Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
-  <header class="site-header">
+    <header class="site-header">
     <div class="container">
-      <h1 class="site-title">🎭 Teatro UCB</h1>
-      <nav class="main-nav" aria-label="Navegación principal">
+      <h1 class="site-title"><span aria-hidden="true">✦</span> Teatro UCB</h1>
+
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-principal">☰</button>
+
+      <nav class="main-nav" id="nav-principal" aria-label="Navegación principal">
         <ul>
           <li><a href="#cartelera">Cartelera</a></li>
           <li><a href="#reserva">Reservas</a></li>
+          <li><a href="#mis-reservas">Mis reservas</a></li>
           <li><a href="#galeria">Galería</a></li>
           <li><a href="#talleres">Talleres</a></li>
         </ul>
       </nav>
     </div>
-  </header>
+  </header>   
 
   <main id="contenido">
-    <section class="hero" aria-labelledby="hero-titulo">
+    
+        <section class="hero" aria-labelledby="hero-titulo">
+      <span class="hero__drape hero__drape--izq" aria-hidden="true"></span>
+      <span class="hero__drape hero__drape--der" aria-hidden="true"></span>
+      <span class="chispa chispa--1" aria-hidden="true">✦</span>
+      <span class="chispa chispa--2" aria-hidden="true">✦</span>
+      <span class="chispa chispa--3" aria-hidden="true">✦</span>
+      <span class="chispa chispa--4" aria-hidden="true">✦</span>
+      <span class="chispa chispa--5" aria-hidden="true">✦</span>
       <div class="container">
-        <h2 id="hero-titulo">Compañía de Teatro UCB</h2>
-        <p>Cartelera, reserva de butacas y archivo histórico de nuestras producciones.</p>
-        <a class="btn" href="#cartelera">Ver cartelera</a>
+        <p class="hero__eyebrow">Compañía de Teatro UCB · Temporada 2026</p>
+        <h2 id="hero-titulo" class="hero__titulo">Donde la magia comienza</h2>
+        <p class="hero__sub">Cartelera, reserva de butacas y el archivo histórico de nuestras producciones.</p>
+        <div class="hero__acciones">
+          <a class="btn" href="#cartelera">Ver cartelera</a>
+          <a class="btn btn--outline" href="#reserva">Reservar butacas</a>
+        </div>
+        <ul class="stats" aria-label="Datos de la compañía">
+          <li><strong data-contar="12">0</strong><span>Años en escena</span></li>
+          <li><strong data-contar="48">0</strong><span>Obras estrenadas</span></li>
+          <li><strong data-contar="96">0</strong><span>Butacas por función</span></li>
+        </ul>
       </div>
     </section>
 
         <!-- RF-01: Cartelera Teatral -->
-    <section id="cartelera" class="section" aria-labelledby="cartelera-titulo">
+    <section id="cartelera" class="section section--papel" aria-labelledby="cartelera-titulo">
       <div class="container">
         <h2 id="cartelera-titulo" class="section__title">Cartelera Teatral</h2>
         <p class="section__intro">
@@ -177,43 +207,13 @@
             </details>
             <a class="btn" href="#reserva" data-obra="El avaro">Reservar butacas</a>
           </article>
-                  <!-- Obra 5 -->
-          <article class="obra card reveal" data-genero="romance">
-            <figure class="obra__poster obra__poster--5">
-              <span class="obra__emoji" aria-hidden="true">🦢</span>
-              <figcaption class="obra__genero">Romance</figcaption>
-            </figure>
-            <header class="obra__header">
-              <h3>Orgullo y Prejuicio</h3>
-              <p class="obra__autor">de Jane Austen</p>
-              <p class="obra__proxima" data-proxima></p>
-            </header>
-            <ul class="funciones" aria-label="Funciones de Orgullo y Prejuicio">
-              <li><time datetime="2026-11-27T19:30">Jue 26 nov · 14:30</time></li>
-              <li><time datetime="2026-11-28T19:30">Sáb 28 nov · 19:30</time></li>
-            </ul>
-            <details name="obra-3">
-              <summary>Sinopsis</summary>
-              <p>narra la historia de Elizabeth Bennet y Fitzwilliam Darcy en la Inglaterra 
-                rural del siglo XIX. La obra explora las convenciones sociales, las limitaciones 
-                de las mujeres y cómo el orgullo y las falsas primeras impresiones pueden nublar el juicio.</p>
-            </details>
-            <details name="obra-5">
-              <summary>Avance en video</summary>
-              <video controls preload="none" playsinline>
-                <source src="assets/videos/orgullo-y-prejuicio.mp4" type="video/mp4">
-                Tu navegador no soporta video HTML5.
-              </video>
-            </details>
-            <a class="btn" href="#reserva" data-obra="Orgullo y Prejuicio">Reservar butacas</a>
-          </article>
+
         </div>
       </div>
     </section>
 
-    <!-- RF-02 -->
         <!-- RF-02: Reserva de Entradas y Mapa de Sillas -->
-    <section id="reserva" class="section" aria-labelledby="reserva-titulo">
+    <section id="reserva" class="section section--noche" aria-labelledby="reserva-titulo">
       <div class="container">
         <h2 id="reserva-titulo" class="section__title">Reserva de Entradas</h2>
         <p class="section__intro">
@@ -235,19 +235,15 @@
 
           <div class="reserva__layout">
             <div class="reserva__mapa">
-              <div class="escenario" aria-hidden="true">Escenario</div>
+              <div class="escenario" aria-hidden="true">Pantalla</div>
               <div id="mapa-sillas" class="mapa" role="group" aria-label="Mapa de butacas"></div>
 
-              <ul class="leyenda" aria-label="Leyenda del mapa">
-                <li><span class="seat seat--muestra seat--disponible" aria-hidden="true"></span> Disponible</li>
+                <ul class="leyenda" aria-label="Leyenda del mapa">
+                <li><span class="seat seat--muestra seat--disponible" data-zona="vip" aria-hidden="true"></span> Platea VIP · Bs 80</li>
+                <li><span class="seat seat--muestra seat--disponible" data-zona="platea" aria-hidden="true"></span> Platea · Bs 60</li>
+                <li><span class="seat seat--muestra seat--disponible" data-zona="balcon" aria-hidden="true"></span> Balcón · Bs 40</li>
                 <li><span class="seat seat--muestra seat--seleccionada" aria-hidden="true"></span> Seleccionada</li>
                 <li><span class="seat seat--muestra seat--ocupada" aria-hidden="true">✕</span> Ocupada</li>
-              </ul>
-
-              <ul class="zonas" aria-label="Precios por zona">
-                <li><strong>Platea VIP</strong> (filas A–B): Bs 80</li>
-                <li><strong>Platea</strong> (filas C–F): Bs 60</li>
-                <li><strong>Balcón</strong> (filas G–H): Bs 40</li>
               </ul>
             </div>
 
@@ -284,29 +280,296 @@
       </div>
     </section>
 
-    <!-- RF-03 -->
-    <section id="galeria" class="section" aria-labelledby="galeria-titulo">
+    <!-- Mis reservas -->
+    <section id="mis-reservas" class="section section--papel" aria-labelledby="mis-reservas-titulo">
       <div class="container">
-        <h2 id="galeria-titulo" class="section__title">Galería y Obras Pasadas</h2>
-        <p>Próximamente: archivo de producciones y reseñas del público.</p>
+        <h2 id="mis-reservas-titulo" class="section__title">Mis reservas</h2>
+        <p class="section__intro">Las reservas confirmadas en este navegador aparecen aquí.</p>
+        <div id="mis-reservas-lista" class="reservas-lista"></div>
       </div>
     </section>
 
-    <!-- RF-04 -->
-    <section id="talleres" class="section" aria-labelledby="talleres-titulo">
+        <!-- RF-03: Galería y Obras Pasadas -->
+    <section id="galeria" class="section section--noche" aria-labelledby="galeria-titulo">
+      <div class="container">
+        <h2 id="galeria-titulo" class="section__title">Galería y Obras Pasadas</h2>
+        <p class="section__intro">
+          El archivo histórico de nuestras producciones. Pulsa una imagen para ampliarla.
+        </p>
+
+        <div class="galeria-grid">
+
+          <article class="pasada card reveal">
+            <button type="button" class="pasada__foto" data-lightbox="0" aria-label="Ampliar cartel de Macbeth">
+              <picture>
+                <source media="(min-width: 700px)" srcset="assets/images/galeria-1-lg.webp" type="image/webp">
+                <source media="(min-width: 700px)" srcset="assets/images/galeria-1-lg.jpg" type="image/jpeg">
+                <source srcset="assets/images/galeria-1-sm.jpg" type="image/jpeg">
+                <img src="assets/images/galeria-1-sm.jpg" alt="Cartel de Macbeth, 2024: corona dorada bajo un foco sobre el escenario" loading="lazy" width="480" height="300">
+              </picture>
+            </button>
+            <header>
+              <h3>Macbeth</h3>
+              <p class="obra__autor">William Shakespeare · 2024</p>
+            </header>
+          </article>
+
+          <article class="pasada card reveal">
+            <button type="button" class="pasada__foto" data-lightbox="1" aria-label="Ampliar cartel de Romeo y Julieta">
+              <picture>
+                <source media="(min-width: 700px)" srcset="assets/images/galeria-2-lg.webp" type="image/webp">
+                <source media="(min-width: 700px)" srcset="assets/images/galeria-2-lg.jpg" type="image/jpeg">
+                <source srcset="assets/images/galeria-2-sm.jpg" type="image/jpeg">
+                <img src="assets/images/galeria-2-sm.jpg" alt="Cartel de Romeo y Julieta, 2023: corazón dorado entre cortinas borgoña" loading="lazy" width="480" height="300">
+              </picture>
+            </button>
+            <header>
+              <h3>Romeo y Julieta</h3>
+              <p class="obra__autor">William Shakespeare · 2023</p>
+            </header>
+          </article>
+
+          <article class="pasada card reveal">
+            <button type="button" class="pasada__foto" data-lightbox="2" aria-label="Ampliar cartel de Sueño de una noche de verano">
+              <picture>
+                <source media="(min-width: 700px)" srcset="assets/images/galeria-3-lg.webp" type="image/webp">
+                <source media="(min-width: 700px)" srcset="assets/images/galeria-3-lg.jpg" type="image/jpeg">
+                <source srcset="assets/images/galeria-3-sm.jpg" type="image/jpeg">
+                <img src="assets/images/galeria-3-sm.jpg" alt="Cartel de Sueño de una noche de verano, 2023: luna dorada sobre fondo azul verdoso" loading="lazy" width="480" height="300">
+              </picture>
+            </button>
+            <header>
+              <h3>Sueño de una noche de verano</h3>
+              <p class="obra__autor">William Shakespeare · 2023</p>
+            </header>
+          </article>
+
+          <article class="pasada card reveal">
+            <button type="button" class="pasada__foto" data-lightbox="3" aria-label="Ampliar cartel de Tartufo">
+              <picture>
+                <source media="(min-width: 700px)" srcset="assets/images/galeria-4-lg.webp" type="image/webp">
+                <source media="(min-width: 700px)" srcset="assets/images/galeria-4-lg.jpg" type="image/jpeg">
+                <source srcset="assets/images/galeria-4-sm.jpg" type="image/jpeg">
+                <img src="assets/images/galeria-4-sm.jpg" alt="Cartel de Tartufo, 2022: máscara dorada sobre fondo ocre" loading="lazy" width="480" height="300">
+              </picture>
+            </button>
+            <header>
+              <h3>Tartufo</h3>
+              <p class="obra__autor">Molière · 2022</p>
+            </header>
+          </article>
+
+        </div>
+
+        <!-- Reseñas -->
+        <div class="resenas">
+          <header class="resenas__cabecera">
+            <h3>Reseñas del público</h3>
+            <p class="resenas__promedio" aria-live="polite">
+              <span id="resenas-promedio">0.0</span>
+              <span id="resenas-estrellas" aria-hidden="true">☆☆☆☆☆</span>
+              <small id="resenas-total"></small>
+            </p>
+          </header>
+
+          <div id="resenas-lista" class="resenas__lista"></div>
+
+                    <details class="resenas__nueva">
+            <summary>Escribe tu reseña</summary>
+
+            <p id="resena-aviso" class="resena__aviso" hidden>
+              <span></span> <a href="#reserva">Reservar butacas</a>
+            </p>
+
+            <form id="form-resena" novalidate>
+              <div class="campo">
+                <label for="res-reserva">Tu reserva</label>
+                <select id="res-reserva" required></select>
+                <p class="campo__error" hidden></p>
+              </div>
+              <div class="campo">
+                <label for="res-nombre">Nombre (según tu reserva)</label>
+                <input id="res-nombre" type="text" readonly>
+              </div>
+              <fieldset class="campo estrellas">
+                <legend>Calificación</legend>
+                <div class="estrellas__grupo">
+                  <input type="radio" name="calif" id="est5" value="5" required><label for="est5" title="5 estrellas">★</label>
+                  <input type="radio" name="calif" id="est4" value="4"><label for="est4" title="4 estrellas">★</label>
+                  <input type="radio" name="calif" id="est3" value="3"><label for="est3" title="3 estrellas">★</label>
+                  <input type="radio" name="calif" id="est2" value="2"><label for="est2" title="2 estrellas">★</label>
+                  <input type="radio" name="calif" id="est1" value="1"><label for="est1" title="1 estrella">★</label>
+                </div>
+                <p class="campo__error" hidden></p>
+              </fieldset>
+              <div class="campo">
+                <label for="res-texto">Tu opinión <small id="res-contador">0/200</small></label>
+                <textarea id="res-texto" rows="3" required minlength="10" maxlength="200"
+                          placeholder="Cuéntanos qué te pareció (10 a 200 caracteres)"></textarea>
+                <p class="campo__error" hidden></p>
+              </div>
+              <button type="submit" class="btn">Publicar reseña</button>
+            </form>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- RF-04: Talleres y Convocatorias -->
+    <section id="talleres" class="section section--papel" aria-labelledby="talleres-titulo">
       <div class="container">
         <h2 id="talleres-titulo" class="section__title">Talleres y Convocatorias</h2>
-        <p>Próximamente: inscripción a talleres teatrales.</p>
+        <p class="section__intro">
+          Aprende con la compañía. Los cupos son limitados: inscríbete desde aquí.
+        </p>
+
+        <div class="talleres-grid">
+
+          <article class="taller card reveal" data-id="actuacion" data-cupos="12">
+            <span class="taller__icono" aria-hidden="true">🎭</span>
+            <h3>Actuación para principiantes</h3>
+            <p>Voz, cuerpo y presencia escénica. Ejercicios de improvisación y escenas cortas.</p>
+            <ul class="taller__datos">
+              <li>📅 Sábados · 09:00 a 11:00</li>
+              <li>🗓️ Inicio: <time datetime="2026-12-12">12 dic 2026</time></li>
+              <li>💰 Bs 150</li>
+            </ul>
+            <p class="taller__cupos"><span data-cupos-texto></span></p>
+            <div class="barra" aria-hidden="true"><span data-barra></span></div>
+            <button type="button" class="btn" data-inscribir>Inscribirme</button>
+          </article>
+
+          <article class="taller card reveal" data-id="dramaturgia" data-cupos="8">
+            <span class="taller__icono" aria-hidden="true">✍️</span>
+            <h3>Dramaturgia y guion</h3>
+            <p>Estructura dramática, diálogos y construcción de personajes. Escribe tu primera pieza corta.</p>
+            <ul class="taller__datos">
+              <li>📅 Miércoles · 18:30 a 20:30</li>
+              <li>🗓️ Inicio: <time datetime="2026-12-09">9 dic 2026</time></li>
+              <li>💰 Bs 120</li>
+            </ul>
+            <p class="taller__cupos"><span data-cupos-texto></span></p>
+            <div class="barra" aria-hidden="true"><span data-barra></span></div>
+            <button type="button" class="btn" data-inscribir>Inscribirme</button>
+          </article>
+
+          <article class="taller card reveal" data-id="escenografia" data-cupos="10">
+            <span class="taller__icono" aria-hidden="true">🎨</span>
+            <h3>Escenografía y vestuario</h3>
+            <p>Diseño de espacios, utilería y vestuario con materiales reciclados.</p>
+            <ul class="taller__datos">
+              <li>📅 Jueves · 16:00 a 18:00</li>
+              <li>🗓️ Inicio: <time datetime="2026-12-10">10 dic 2026</time></li>
+              <li>💰 Bs 100</li>
+            </ul>
+            <p class="taller__cupos"><span data-cupos-texto></span></p>
+            <div class="barra" aria-hidden="true"><span data-barra></span></div>
+            <button type="button" class="btn" data-inscribir>Inscribirme</button>
+          </article>
+
+        </div>
+
+        <div class="convocatoria card reveal">
+          <h3>📣 Convocatoria abierta: elenco 2027</h3>
+          <p>La compañía busca nuevos actores y técnicos para la temporada 2027. Las inscripciones a los talleres cuentan como preselección.</p>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
+    <footer class="site-footer">
     <div class="container">
-      <p>&copy; <span id="anio">2026</span> Compañía de Teatro UCB · Tecnologías Web I</p>
+      <p class="footer__logo">Teatro UCB</p>
+      <p class="footer__lema">✦ Donde el telón se abre y la magia comienza ✦</p>
+      <nav class="footer__nav" aria-label="Pie de página">
+        <a href="#cartelera">Cartelera</a>
+        <a href="#reserva">Reservas</a>
+        <a href="#galeria">Galería</a>
+        <a href="#talleres">Talleres</a>
+      </nav>
+      <p class="footer__copy">&copy; <span id="anio">2026</span> Compañía de Teatro UCB · Tecnologías Web I</p>
     </div>
   </footer>
+    <!-- Lightbox de galería -->
+  <dialog id="lightbox" class="lightbox" aria-label="Visor de imágenes">
+    <button type="button" class="lightbox__cerrar" aria-label="Cerrar">✕</button>
+    <button type="button" class="lightbox__nav lightbox__nav--prev" aria-label="Anterior">‹</button>
+    <figure>
+      <img id="lightbox-img" src="" alt="">
+      <figcaption id="lightbox-texto"></figcaption>
+    </figure>
+    <button type="button" class="lightbox__nav lightbox__nav--next" aria-label="Siguiente">›</button>
+  </dialog>
 
+  <!-- Modal de inscripción a talleres (RF-04) -->
+  <dialog id="modal-taller" class="modal" aria-labelledby="modal-titulo">
+    <form id="form-taller" method="dialog" novalidate>
+      <header class="modal__cabecera">
+        <h3 id="modal-titulo">Inscripción</h3>
+        <button type="button" class="modal__cerrar" data-cerrar aria-label="Cerrar">✕</button>
+      </header>
+
+      <div id="modal-cuerpo">
+        <p id="modal-taller-nombre" class="modal__taller"></p>
+
+        <div class="campo">
+          <label for="t-nombre">Nombre completo</label>
+          <input id="t-nombre" type="text" required minlength="3" maxlength="60"
+                 pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü ]{3,60}" autocomplete="name" placeholder="Ej: Carlos Quispe">
+          <p class="campo__error" hidden></p>
+        </div>
+                <div class="campo">
+          <label for="t-correo">Correo institucional</label>
+          <input id="t-correo" type="email" required autocomplete="email"
+                 pattern="[a-z0-9._+\-]+@ucb\.edu\.bo" placeholder="nombre.apellido@ucb.edu.bo">
+          <p class="campo__error" hidden></p>
+        </div>
+        <div class="campo">
+          <label for="t-telefono">Teléfono / WhatsApp</label>
+          <input id="t-telefono" type="tel" required pattern="[67][0-9]{7}" inputmode="numeric"
+                 maxlength="8" placeholder="8 dígitos, ej: 71234567">
+          <p class="campo__error" hidden></p>
+        </div>
+        <div class="campo">
+          <label for="t-edad">Edad</label>
+          <input id="t-edad" type="number" required min="14" max="99" placeholder="14 a 99">
+          <p class="campo__error" hidden></p>
+        </div>
+        <div class="campo">
+          <label for="t-experiencia">Experiencia previa</label>
+          <select id="t-experiencia" required>
+            <option value="">Selecciona…</option>
+            <option>Ninguna</option>
+            <option>Básica (talleres o colegio)</option>
+            <option>Intermedia (grupos amateur)</option>
+            <option>Avanzada</option>
+          </select>
+          <p class="campo__error" hidden></p>
+        </div>
+        <label class="check">
+          <input type="checkbox" id="t-acepto" required>
+          <span>Acepto las condiciones del taller y el tratamiento de mis datos.</span>
+        </label>
+        <p class="campo__error" id="error-acepto" hidden></p>
+
+        <div class="modal__acciones">
+          <button type="submit" class="btn">Confirmar inscripción</button>
+          <button type="button" class="btn btn--outline" data-cerrar>Cancelar</button>
+        </div>
+      </div>
+
+      <div id="modal-exito" class="modal__exito" hidden>
+        <p class="modal__check" aria-hidden="true">✔</p>
+        <h3>¡Inscripción registrada!</h3>
+        <p id="modal-exito-texto"></p>
+        <button type="button" class="btn" data-cerrar>Cerrar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Toasts y volver arriba -->
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+  <button type="button" id="btn-arriba" class="btn-arriba" aria-label="Volver arriba" hidden>↑</button>
   <script src="js/main.js"></script>
 </body>
 </html>

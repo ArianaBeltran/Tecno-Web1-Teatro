@@ -15,7 +15,6 @@
 
   /* Tipografía */
   --font-main: 'Arial', sans-serif;
-  --font-title: Georgia, 'Times New Roman', serif;
 
   /* Espaciado y forma */
   --space-sm: 0.5rem;
@@ -28,4 +27,23 @@
     /* Efectos */
   --shadow-gold: 0 8px 24px rgba(212, 175, 55, 0.18);
   --transition: 0.3s ease;
+
+    /* Paleta vintage (papel y tinta) */
+  --gold: #D4AF37;
+  --paper: #f1e5cc;
+  --ink: #2b1a14;
+  --ink-soft: #5a4636;
+  --ornament: #D4AF37;
+
+  /* Zonas del teatro */
+  --zona-vip: #b5173f;
+  --zona-platea: #2a7d4f;
+  --zona-balcon: #3a6fb0;
+
+  /* Tipografía */
+  --font-script: 'Pinyon Script', 'Brush Script MT', cursive;
+  --font-title: 'Playfair Display', Georgia, 'Times New Roman', serif;
+
+  /* Textura de papel (ruido SVG) */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }

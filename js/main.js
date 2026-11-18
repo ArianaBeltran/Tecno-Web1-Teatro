@@ -88,6 +88,415 @@ function initReveal() {
   elementos.forEach((el) => observer.observe(el));
 }
 
+/* ===== Utilidades de interfaz ===== */
+function toast(texto, esError = false) {
+  const contenedor = $('#toasts');
+  if (!contenedor) return;
+  const el = document.createElement('div');
+  el.className = 'toast' + (esError ? ' toast--error' : '');
+  el.textContent = texto;
+  contenedor.append(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+function escapar(texto) {
+  const div = document.createElement('div');
+  div.textContent = texto;
+  return div.innerHTML;
+}
+
+function ponerError(campo, mensaje) {
+  const contenedor = campo.closest('.campo') || campo.parentElement;
+  const error = $('.campo__error', contenedor) || $('#error-acepto');
+  campo.classList.toggle('is-invalid', Boolean(mensaje));
+  campo.setAttribute('aria-invalid', String(Boolean(mensaje)));
+  if (error) {
+    error.textContent = mensaje;
+    error.hidden = !mensaje;
+  }
+}
+
+/* Validador genérico con la Constraint Validation API nativa */
+function validarCampo(campo, mensajes = {}) {
+  const v = campo.validity;
+  let mensaje = '';
+  if (v.valueMissing) mensaje = mensajes.vacio || 'Este campo es obligatorio.';
+  else if (v.tooShort) mensaje = mensajes.corto || `Mínimo ${campo.minLength} caracteres.`;
+  else if (v.patternMismatch || v.typeMismatch) mensaje = mensajes.formato || 'Formato no válido.';
+  else if (v.rangeUnderflow || v.rangeOverflow) mensaje = mensajes.rango || 'Valor fuera de rango.';
+  ponerError(campo, mensaje);
+  return !mensaje;
+}
+
+/* ===== RF-03: lightbox ===== */
+function initLightbox() {
+  const dialogo = $('#lightbox');
+  if (!dialogo) return;
+  const fotos = $$('.pasada');
+  let actual = 0;
+
+  function mostrar(indice) {
+    actual = (indice + fotos.length) % fotos.length;
+    const tarjeta = fotos[actual];
+    const imagen = $('picture img', tarjeta);
+    const grande = $('source[type="image/jpeg"]', tarjeta).srcset;
+    $('#lightbox-img', dialogo).src = grande;
+    $('#lightbox-img', dialogo).alt = imagen.alt;
+    $('#lightbox-texto', dialogo).textContent = `${$('h3', tarjeta).textContent} · ${$('.obra__autor', tarjeta).textContent}`;
+  }
+
+  $$('[data-lightbox]').forEach((boton) => {
+    boton.addEventListener('click', () => {
+      mostrar(Number(boton.dataset.lightbox));
+      dialogo.showModal();
+    });
+  });
+  $('.lightbox__cerrar', dialogo).addEventListener('click', () => dialogo.close());
+  $('.lightbox__nav--prev', dialogo).addEventListener('click', () => mostrar(actual - 1));
+  $('.lightbox__nav--next', dialogo).addEventListener('click', () => mostrar(actual + 1));
+  dialogo.addEventListener('click', (e) => { if (e.target === dialogo) dialogo.close(); });
+  dialogo.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') mostrar(actual - 1);
+    if (e.key === 'ArrowRight') mostrar(actual + 1);
+  });
+}
+
+/* ===== RF-03: reseñas ===== */
+const CLAVE_RESENAS = 'teatroUCB.resenas';
+const RESENAS_BASE = [
+  { nombre: 'Daniela Rojas', obra: 'Macbeth', calif: 5, texto: 'La iluminación y el vestuario me dejaron sin aliento. Una puesta en escena memorable.', fecha: '2024-05-18' },
+  { nombre: 'Marco Flores', obra: 'Romeo y Julieta', calif: 4, texto: 'Muy emotiva, los actores transmitieron cada escena con mucha fuerza.', fecha: '2023-10-07' },
+  { nombre: 'Valeria Choque', obra: 'Sueño de una noche de verano', calif: 5, texto: 'Mágica y divertida. Fui con mi familia y todos disfrutamos muchísimo.', fecha: '2023-06-24' },
+  { nombre: 'Julio Terrazas', obra: 'Tartufo', calif: 4, texto: 'Una comedia afilada con excelente ritmo. Me reí de principio a fin.', fecha: '2022-11-12' }
+];
+
+const estrellasTexto = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
+
+function renderResenas() {
+  const lista = $('#resenas-lista');
+  if (!lista) return;
+  const propias = leerStorage(CLAVE_RESENAS, []);
+  const todas = [...propias, ...RESENAS_BASE];
+
+  lista.replaceChildren();
+  todas.forEach((r, i) => {
+    const tarjeta = document.createElement('article');
+    tarjeta.className = 'resena card' + (i < propias.length ? ' resena--nueva' : '');
+    tarjeta.innerHTML = `
+      <span class="resena__estrellas" aria-label="${r.calif} de 5 estrellas">${estrellasTexto(r.calif)}</span>
+      <p class="resena__texto">“${escapar(r.texto)}”</p>
+      <p class="resena__pie"><strong>${escapar(r.nombre)}</strong> · ${escapar(r.obra)}</p>`;
+    lista.append(tarjeta);
+  });
+
+  const promedio = todas.reduce((s, r) => s + r.calif, 0) / todas.length;
+  $('#resenas-promedio').textContent = promedio.toFixed(1);
+  $('#resenas-estrellas').textContent = estrellasTexto(Math.round(promedio));
+  $('#resenas-total').textContent = `(${todas.length} reseñas)`;
+}
+
+/* Reservas del usuario que aún no tienen reseña */
+function reservasParaResenar() {
+  const usadas = new Set(leerStorage(CLAVE_RESENAS, []).map((r) => r.codigo).filter(Boolean));
+  return leerStorage(CLAVE_TICKETS, []).filter((t) => !usadas.has(t.codigo));
+}
+
+function actualizarFormResena() {
+  const form = $('#form-resena');
+  if (!form) return;
+
+  const select = $('#res-reserva');
+  const disponibles = reservasParaResenar();
+  const hayTickets = leerStorage(CLAVE_TICKETS, []).length > 0;
+
+  select.replaceChildren(new Option(disponibles.length ? 'Selecciona tu reserva…' : 'Sin reservas disponibles', ''));
+  disponibles.forEach((t) => select.add(new Option(`${t.obra} · ${t.funcion} (${t.codigo})`, t.codigo)));
+  $('#res-nombre').value = '';
+  $$('.is-invalid', form).forEach((c) => c.classList.remove('is-invalid'));
+
+  const aviso = $('#resena-aviso');
+  aviso.hidden = disponibles.length > 0;
+  $('span', aviso).textContent = hayTickets
+    ? 'Ya reseñaste todas tus reservas. Reserva otra función para opinar de nuevo.'
+    : 'Para reseñar una obra primero debes tener una reserva confirmada.';
+
+  // Sin reservas disponibles, el formulario queda bloqueado
+  $$('input, select, textarea, button', form).forEach((c) => { c.disabled = disponibles.length === 0; });
+}
+
+function initResenas() {
+  const form = $('#form-resena');
+  if (!form) return;
+  renderResenas();
+  actualizarFormResena();
+
+  const texto = $('#res-texto');
+  texto.addEventListener('input', () => { $('#res-contador').textContent = `${texto.value.length}/200`; });
+
+  $('#res-reserva').addEventListener('change', (e) => {
+    const ticket = leerStorage(CLAVE_TICKETS, []).find((t) => t.codigo === e.target.value);
+    $('#res-nombre').value = ticket ? ticket.nombre : '';
+    ponerError(e.target, '');
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const select = $('#res-reserva');
+    const radio = $('input[name="calif"]:checked', form);
+    texto.value = texto.value.trim();
+
+    const okReserva = validarCampo(select, { vacio: 'Elige la reserva de la obra que quieres reseñar.' });
+    const ticket = leerStorage(CLAVE_TICKETS, []).find((t) => t.codigo === select.value);
+
+    // Revalida contra las reservas guardadas (no basta con lo que muestra el select)
+    if (okReserva && !ticket) { ponerError(select, 'No encontramos esa reserva.'); return; }
+    if (okReserva && leerStorage(CLAVE_RESENAS, []).some((r) => r.codigo === ticket.codigo)) {
+      ponerError(select, 'Ya reseñaste esta reserva.');
+      return;
+    }
+
+    const okTexto = validarCampo(texto, { vacio: 'Escribe tu opinión.', corto: 'Mínimo 10 caracteres.' });
+    const errorEst = $('.estrellas .campo__error', form);
+    errorEst.textContent = radio ? '' : 'Elige una calificación.';
+    errorEst.hidden = Boolean(radio);
+
+    if (!(okReserva && okTexto && radio)) return;
+
+    const propias = leerStorage(CLAVE_RESENAS, []);
+    propias.unshift({
+      codigo: ticket.codigo, nombre: ticket.nombre, obra: ticket.obra,
+      calif: Number(radio.value), texto: texto.value, fecha: new Date().toISOString().slice(0, 10)
+    });
+    guardarStorage(CLAVE_RESENAS, propias.slice(0, 20));
+
+    form.reset();
+    $('#res-contador').textContent = '0/200';
+    renderResenas();
+    actualizarFormResena();
+    toast('¡Gracias por tu reseña!');
+  });
+}
+
+/* ===== RF-04: talleres con <dialog> ===== */
+const CLAVE_INSCRIPCIONES = 'teatroUCB.inscripciones';
+
+function actualizarCupos() {
+  const inscritos = leerStorage(CLAVE_INSCRIPCIONES, []);
+  $$('.taller').forEach((taller) => {
+    const total = Number(taller.dataset.cupos);
+    const usados = inscritos.filter((i) => i.taller === taller.dataset.id).length;
+    const libres = Math.max(total - usados, 0);
+    $('[data-cupos-texto]', taller).textContent = libres > 0 ? `${libres} de ${total} cupos disponibles` : 'Cupos agotados';
+    $('[data-barra]', taller).style.width = `${(usados / total) * 100}%`;
+    taller.classList.toggle('is-agotado', libres === 0);
+    const boton = $('[data-inscribir]', taller);
+    boton.disabled = libres === 0;
+    boton.textContent = libres === 0 ? 'Sin cupos' : 'Inscribirme';
+  });
+}
+
+function initTalleres() {
+  const modal = $('#modal-taller');
+  if (!modal) return;
+  const form = $('#form-taller');
+  let tallerActual = null;
+
+  actualizarCupos();
+
+  $$('[data-inscribir]').forEach((boton) => {
+    boton.addEventListener('click', () => {
+      tallerActual = boton.closest('.taller');
+      form.reset();
+      $$('.campo__error', form).forEach((e) => { e.hidden = true; });
+      $$('.is-invalid', form).forEach((c) => c.classList.remove('is-invalid'));
+      $('#modal-cuerpo').hidden = false;
+      $('#modal-exito').hidden = true;
+      $('#modal-titulo').textContent = 'Inscripción';
+      $('#modal-taller-nombre').textContent = $('h3', tallerActual).textContent;
+      modal.showModal();
+      $('#t-nombre').focus();
+    });
+  });
+
+  $$('[data-cerrar]', modal).forEach((b) => b.addEventListener('click', () => modal.close()));
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.close(); });
+
+  // Solo dígitos en el teléfono
+  $('#t-telefono').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 8); });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nombre = $('#t-nombre');
+    nombre.value = nombre.value.trim().replace(/\s+/g, ' ');
+
+    const campoCorreo = $('#t-correo');
+    campoCorreo.value = campoCorreo.value.trim().toLowerCase();
+
+    const resultados = [
+      validarCampo(nombre, { vacio: 'Ingresa tu nombre completo.', formato: 'Solo letras y espacios.', corto: 'Mínimo 3 letras.' }),
+      validarCampo(campoCorreo, { vacio: 'Ingresa tu correo institucional.', formato: 'Solo se aceptan correos @ucb.edu.bo (ej: nombre.apellido@ucb.edu.bo).' }),
+      validarCampo($('#t-telefono'), { vacio: 'Ingresa tu teléfono.', formato: 'Debe tener 8 dígitos y empezar con 6 o 7.' }),
+      validarCampo($('#t-edad'), { vacio: 'Ingresa tu edad.', rango: 'La edad debe estar entre 14 y 99.' }),
+      validarCampo($('#t-experiencia'), { vacio: 'Selecciona tu nivel.' })
+    ];
+    const acepto = $('#t-acepto');
+    const errorAcepto = $('#error-acepto');
+    errorAcepto.textContent = acepto.checked ? '' : 'Debes aceptar las condiciones.';
+    errorAcepto.hidden = acepto.checked;
+    resultados.push(acepto.checked);
+
+    if (resultados.includes(false)) {
+      const primero = $('.is-invalid', form);
+      if (primero) primero.focus();
+      return;
+    }
+
+    const inscritos = leerStorage(CLAVE_INSCRIPCIONES, []);
+    const id = tallerActual.dataset.id;
+    const correo = $('#t-correo').value.trim().toLowerCase();
+
+    if (inscritos.some((i) => i.taller === id && i.correo === correo)) {
+      ponerError($('#t-correo'), 'Este correo ya está inscrito en este taller.');
+      $('#t-correo').focus();
+      return;
+    }
+
+    inscritos.push({
+      taller: id, nombre: nombre.value, correo,
+      telefono: $('#t-telefono').value, edad: Number($('#t-edad').value),
+      experiencia: $('#t-experiencia').value, fecha: new Date().toISOString()
+    });
+    guardarStorage(CLAVE_INSCRIPCIONES, inscritos);
+
+    $('#modal-cuerpo').hidden = true;
+    $('#modal-exito').hidden = false;
+    $('#modal-titulo').textContent = 'Listo';
+    $('#modal-exito-texto').textContent =
+      `${nombre.value.split(' ')[0]}, quedaste inscrito en "${$('h3', tallerActual).textContent}". Te contactaremos a ${correo}.`;
+    actualizarCupos();
+    toast('Inscripción registrada');
+  });
+}
+
+/* ===== Mis reservas ===== */
+const CLAVE_TICKETS = 'teatroUCB.tickets';
+
+function renderMisReservas() {
+  const lista = $('#mis-reservas-lista');
+  if (!lista) return;
+  const tickets = leerStorage(CLAVE_TICKETS, []);
+  lista.replaceChildren();
+
+  if (tickets.length === 0) {
+    const vacio = document.createElement('p');
+    vacio.className = 'reservas-vacio';
+    vacio.textContent = 'Aún no tienes reservas. Elige una obra en la cartelera y selecciona tus butacas.';
+    lista.append(vacio);
+    return;
+  }
+
+  tickets.forEach((t) => {
+    const tarjeta = document.createElement('article');
+    tarjeta.className = 'ticket card';
+    tarjeta.innerHTML = `
+      <span class="ticket__codigo">${escapar(t.codigo)}</span>
+      <h3>${escapar(t.obra)}</h3>
+      <p class="ticket__datos">${escapar(t.funcion)}</p>
+      <p class="ticket__datos">Butacas: ${escapar(t.asientos.join(', '))}</p>
+      <p class="ticket__datos">A nombre de: ${escapar(t.nombre)}</p>
+      <p class="ticket__total">Total: Bs ${t.total}</p>`;
+    const cancelar = document.createElement('button');
+    cancelar.type = 'button';
+    cancelar.className = 'btn btn--outline';
+    cancelar.textContent = 'Cancelar reserva';
+    cancelar.addEventListener('click', () => cancelarTicket(t.codigo));
+    tarjeta.append(cancelar);
+    lista.append(tarjeta);
+  });
+}
+
+function guardarTicket(ticket) {
+  const tickets = leerStorage(CLAVE_TICKETS, []);
+  tickets.unshift(ticket);
+  guardarStorage(CLAVE_TICKETS, tickets);
+  renderMisReservas();
+  actualizarFormResena();
+}
+
+function cancelarTicket(codigo) {
+  const tickets = leerStorage(CLAVE_TICKETS, []);
+  const ticket = tickets.find((t) => t.codigo === codigo);
+  if (!ticket) return;
+  if (!confirm(`¿Cancelar la reserva ${codigo}? Las butacas quedarán libres.`)) return;
+
+  const reservas = leerStorage(CLAVE_RESERVAS, {});
+  reservas[ticket.funcionId] = (reservas[ticket.funcionId] || []).filter((id) => !ticket.asientos.includes(id));
+  guardarStorage(CLAVE_RESERVAS, reservas);
+  guardarStorage(CLAVE_TICKETS, tickets.filter((t) => t.codigo !== codigo));
+  guardarStorage(CLAVE_RESENAS, leerStorage(CLAVE_RESENAS, []).filter((r) => r.codigo !== codigo));
+
+  renderMisReservas();
+  renderResenas();
+  actualizarFormResena();
+  if (reserva.funcionId) { renderMapa(); actualizarResumen(); }
+  toast(`Reserva ${codigo} cancelada`);
+}
+
+/* ===== Navegación: menú móvil, enlace activo, volver arriba, contadores ===== */
+function initNavegacion() {
+  const toggle = $('#nav-toggle');
+  const nav = $('#nav-principal');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      const abierto = nav.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(abierto));
+      toggle.textContent = abierto ? '✕' : '☰';
+    });
+    $$('a', nav).forEach((a) => a.addEventListener('click', () => {
+      nav.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.textContent = '☰';
+    }));
+  }
+
+  // Enlace activo según la sección visible
+  const enlaces = $$('.main-nav a');
+  const secciones = enlaces.map((a) => $(a.getAttribute('href'))).filter(Boolean);
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entradas) => {
+      entradas.forEach((en) => {
+        if (en.isIntersecting) {
+          enlaces.forEach((a) => a.classList.toggle('is-active', a.getAttribute('href') === `#${en.target.id}`));
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    secciones.forEach((s) => obs.observe(s));
+  }
+
+  // Botón volver arriba
+  const arriba = $('#btn-arriba');
+  if (arriba) {
+    window.addEventListener('scroll', () => { arriba.hidden = window.scrollY < 600; }, { passive: true });
+    arriba.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
+}
+
+function initContadores() {
+  const numeros = $$('[data-contar]');
+  const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  numeros.forEach((el) => {
+    const meta = Number(el.dataset.contar);
+    if (reducido) { el.textContent = meta; return; }
+    const inicio = performance.now();
+    const duracion = 1800;
+    (function paso(ahora) {
+      const t = Math.min((ahora - inicio) / duracion, 1);
+      el.textContent = Math.round(meta * (1 - Math.pow(1 - t, 3)));
+      if (t < 1) requestAnimationFrame(paso);
+    })(inicio);
+  });
+}
+
 /* ===== RF-02: reserva de entradas y mapa de sillas ===== */
 const BUTACAS_POR_FILA = 12;
 const MAX_SELECCION = 6;
@@ -95,9 +504,9 @@ const CLAVE_RESERVAS = 'teatroUCB.reservas';
 const CLAVE_SELECCION = 'teatroUCB.seleccion';
 
 const FILAS = [
-  ...['A', 'B'].map((letra) => ({ letra, zona: 'Platea VIP', precio: 80 })),
-  ...['C', 'D', 'E', 'F'].map((letra) => ({ letra, zona: 'Platea', precio: 60 })),
-  ...['G', 'H'].map((letra) => ({ letra, zona: 'Balcón', precio: 40 }))
+  ...['A', 'B'].map((letra) => ({ letra, zona: 'Platea VIP', clave: 'vip', precio: 80 })),
+  ...['C', 'D', 'E', 'F'].map((letra) => ({ letra, zona: 'Platea', clave: 'platea', precio: 60 })),
+  ...['G', 'H'].map((letra) => ({ letra, zona: 'Balcón', clave: 'balcon', precio: 40 }))
 ];
 
 const reserva = {
@@ -254,7 +663,16 @@ function renderMapa() {
 
   const ocupadas = butacasOcupadas(reserva.funcionId);
 
-  FILAS.forEach((fila) => {
+  FILAS.forEach((fila, indice) => {
+    // Título de zona al comenzar cada zona
+    if (indice === 0 || FILAS[indice - 1].clave !== fila.clave) {
+      const titulo = document.createElement('p');
+      titulo.className = 'zona-titulo';
+      titulo.dataset.zona = fila.clave;
+      titulo.textContent = `${fila.zona} · Bs ${fila.precio}`;
+      mapa.append(titulo);
+    }
+
     const filaEl = document.createElement('div');
     filaEl.className = 'fila';
     filaEl.setAttribute('role', 'group');
@@ -274,9 +692,11 @@ function renderMapa() {
 
       const boton = document.createElement('button');
       boton.type = 'button';
-      boton.className = `seat seat--${ocupada ? 'ocupada' : elegida ? 'seleccionada' : 'disponible'}`;
+      boton.className = `seat seat--${estado}`;
       if (n === BUTACAS_POR_FILA / 2 + 1) boton.classList.add('seat--pasillo');
       boton.dataset.id = id;
+      boton.dataset.zona = fila.clave;
+      boton.dataset.tip = `${fila.zona} · Fila ${fila.letra}, butaca ${n} · Bs ${fila.precio}`;
       boton.disabled = ocupada;
       boton.textContent = ocupada ? '✕' : String(n);
       boton.setAttribute('aria-pressed', String(elegida));
@@ -388,6 +808,12 @@ function confirmarReserva(evento) {
   const codigo = 'TUCB-' + hash(reserva.funcionId + asientos.join() + nombre + Date.now())
     .toString(36).toUpperCase().slice(0, 6);
 
+  guardarTicket({
+    codigo, funcionId: reserva.funcionId, obra: reserva.obra, funcion: reserva.funcion,
+    asientos, nombre, total, fecha: new Date().toISOString()
+  });
+  toast(`Reserva ${codigo} confirmada`);
+
   reserva.seleccion.clear();
   guardarSeleccion();
   $('#nombre').value = '';
@@ -456,13 +882,78 @@ function initReserva() {
     mostrarEstado('Reservas de esta función reiniciadas.');
   });
 }
+/* ===== Header: se oculta al bajar y reaparece al subir ===== */
+function initHeaderAutoOcultar() {
+  const header = $('.site-header');
+  if (!header) return;
+  let ultimo = window.scrollY;
+  let esperando = false;
 
+  window.addEventListener('scroll', () => {
+    if (esperando) return;
+    esperando = true;
+    requestAnimationFrame(() => {
+      const actual = window.scrollY;
+      const delta = actual - ultimo;
+      const menuAbierto = $('#nav-principal')?.classList.contains('is-open');
+
+      if (actual < 80 || menuAbierto) header.classList.remove('is-hidden');
+      else if (delta > 6) header.classList.add('is-hidden');
+      else if (delta < -6) header.classList.remove('is-hidden');
+
+      if (Math.abs(delta) > 6) ultimo = actual;
+      esperando = false;
+    });
+  }, { passive: true });
+
+  // Con el teclado, el header siempre vuelve a mostrarse
+  header.addEventListener('focusin', () => header.classList.remove('is-hidden'));
+}
+
+/* ===== Tooltip de butacas (mouse y teclado) ===== */
+function initTooltipButacas() {
+  const mapa = $('#mapa-sillas');
+  if (!mapa) return;
+
+  const tip = document.createElement('div');
+  tip.className = 'tooltip-butaca';
+  tip.setAttribute('role', 'tooltip');
+  tip.hidden = true;
+  document.body.append(tip);
+
+  const mostrar = (boton) => {
+    tip.textContent = boton.dataset.tip;
+    tip.dataset.zona = boton.dataset.zona;
+    tip.hidden = false;
+    const r = boton.getBoundingClientRect();
+    const t = tip.getBoundingClientRect();
+    const x = Math.max(8, Math.min(r.left + r.width / 2 - t.width / 2, window.innerWidth - t.width - 8));
+    const y = r.top - t.height - 8 < 8 ? r.bottom + 8 : r.top - t.height - 8;
+    tip.style.left = `${x}px`;
+    tip.style.top = `${y}px`;
+  };
+  const ocultar = () => { tip.hidden = true; };
+
+  mapa.addEventListener('mouseover', (e) => { const b = e.target.closest('.seat[data-tip]'); if (b) mostrar(b); });
+  mapa.addEventListener('mouseout', ocultar);
+  mapa.addEventListener('focusin', (e) => { const b = e.target.closest('.seat[data-tip]'); if (b) mostrar(b); });
+  mapa.addEventListener('focusout', ocultar);
+  window.addEventListener('scroll', ocultar, { passive: true });
+}
 /* ===== Inicio ===== */
 document.addEventListener('DOMContentLoaded', () => {
   initAnio();
+  initNavegacion();
+  initHeaderAutoOcultar();
+  initContadores();
   initFiltros();
   initProximaFuncion();
   initBotonesReserva();
   initReserva();
+  initTooltipButacas();
+  renderMisReservas();
+  initLightbox();
+  initResenas();
+  initTalleres();
   initReveal();
 });
