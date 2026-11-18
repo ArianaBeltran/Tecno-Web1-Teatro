@@ -1,0 +1,354 @@
+@import url('theme.css');
+
+/* =========================================================
+   theme.css — Estilo vintage / romántico (papel, tinta y telón)
+   Se importa al FINAL de styles.css y sobrescribe lo necesario
+   sin tocar variables.css, base.css, layout.css ni components.css.
+   ========================================================= */
+
+html { scroll-padding-top: 90px; }
+
+/* ---------- Tipografía ---------- */
+h1, h2, h3, h4 { font-family: var(--font-title); }
+
+.section__title {
+  font-family: var(--font-script);
+  font-weight: 400;
+  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  line-height: 1.1;
+  text-align: center;
+  margin-bottom: var(--space-sm);
+}
+.section__title::after {
+  content: "❦ ✦ ❦";
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--font-title);
+  font-size: 1rem;
+  letter-spacing: 0.6em;
+  color: var(--ornament);
+}
+.section__intro {
+  margin-inline: auto;
+  text-align: center;
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+/* ---------- Header (se oculta al bajar, reaparece al subir) ---------- */
+.site-header {
+  background: rgba(14, 14, 14, 0.96);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--gold);
+  box-shadow: 0 4px 0 var(--color-primary), 0 12px 28px rgba(0, 0, 0, 0.55);
+  transition: transform 0.35s ease;
+}
+.site-header.is-hidden { transform: translateY(-130%); }
+.site-header .container { padding-block: 0.6rem; }
+
+.site-title {
+  font-family: var(--font-script);
+  font-weight: 400;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--gold);
+}
+.site-title span { color: #c8102e; font-size: 0.9rem; vertical-align: middle; }
+
+.main-nav a {
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #f6ead0;
+}
+.main-nav a:hover { color: var(--gold); text-decoration: none; }
+
+/* ---------- Hero ---------- */
+.hero {
+  min-height: min(88vh, 760px);
+  display: grid;
+  place-items: center;
+  padding-block: clamp(4rem, 10vw, 7rem);
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 0%, rgba(255, 226, 150, 0.28), transparent 70%),
+    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(128, 0, 32, 0.55), transparent 70%),
+    var(--grain),
+    var(--color-bg);
+}
+.hero__drape {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(36px, 8vw, 140px);
+  z-index: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg, #3d0010 0 9px, #800020 9px 22px, #560016 22px 31px);
+  box-shadow: inset 0 -80px 80px -40px rgba(0, 0, 0, 0.65);
+}
+.hero__drape--izq { left: 0; border-right: 2px solid var(--gold); }
+.hero__drape--der { right: 0; border-left: 2px solid var(--gold); }
+
+.hero__eyebrow {
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: #f6ead0;
+  margin-bottom: var(--space-sm);
+}
+.hero__eyebrow::before,
+.hero__eyebrow::after { content: "✦"; color: var(--gold); margin-inline: 0.8em; }
+
+.hero .hero__titulo {
+  font-family: var(--font-script);
+  font-weight: 400;
+  font-size: clamp(3.6rem, 12vw, 8rem);
+  line-height: 1.05;
+  margin-bottom: var(--space-md);
+  padding: 0.05em 0.15em 0.15em;
+  color: var(--gold);
+  background: linear-gradient(180deg, #fbeeb5 0%, #d4af37 55%, #9a7714 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.6));
+}
+.hero__sub {
+  max-width: 52ch;
+  margin: 0 auto var(--space-lg);
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #e9dcc0;
+}
+.hero__acciones { display: flex; flex-wrap: wrap; gap: var(--space-md); justify-content: center; }
+.hero .stats {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+.chispa {
+  position: absolute;
+  z-index: 1;
+  color: var(--gold);
+  font-size: 1.4rem;
+  pointer-events: none;
+  animation: titilar 3.2s ease-in-out infinite;
+}
+.chispa--1 { top: 18%; left: 16%; }
+.chispa--2 { top: 12%; right: 20%; font-size: 2rem; animation-delay: 0.8s; }
+.chispa--3 { top: 46%; left: 11%; font-size: 1rem; animation-delay: 1.6s; }
+.chispa--4 { top: 60%; right: 14%; animation-delay: 2.2s; }
+.chispa--5 { bottom: 16%; left: 28%; font-size: 1rem; animation-delay: 1.1s; }
+@keyframes titilar {
+  0%, 100% { opacity: 0.25; transform: scale(0.8) rotate(0deg); }
+  50%      { opacity: 1;    transform: scale(1.15) rotate(20deg); }
+}
+
+/* ---------- Secciones: papel (claro) y noche (oscuro) ---------- */
+.section { position: relative; }
+
+.section.section--noche {
+  --ornament: var(--gold);
+  background-color: var(--color-bg);
+  background-image: var(--grain), radial-gradient(ellipse at 50% 0%, rgba(128, 0, 32, 0.25), transparent 60%);
+}
+
+.section.section--papel {
+  --color-secondary: #800020;      /* acentos en borgoña sobre papel */
+  --color-text: var(--ink);
+  --color-text-muted: var(--ink-soft);
+  --color-surface: #f8f0dc;
+  --ornament: #b08d2a;
+  background-color: var(--paper);
+  background-image: var(--grain), radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.45), transparent 65%);
+  color: var(--ink);
+}
+
+/* Borde festoneado tipo entrada de teatro */
+.section--papel::before,
+.section--papel::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 14px;
+  pointer-events: none;
+  background: radial-gradient(circle at 10px 0, var(--color-bg) 9px, transparent 10px) 0 0 / 20px 14px repeat-x;
+}
+.section--papel::before { top: 0; }
+.section--papel::after { bottom: 0; transform: scaleY(-1); }
+
+/* ---------- Tarjetas con doble marco ---------- */
+.card { position: relative; box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35); }
+.section--noche .card {
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  outline: 1px solid rgba(212, 175, 55, 0.18);
+  outline-offset: -7px;
+}
+.section--papel .card {
+  border: 1px solid #b99b5b;
+  box-shadow: 0 2px 0 #d8c08a, 0 14px 28px rgba(70, 35, 10, 0.22);
+  outline: 1px solid rgba(128, 0, 32, 0.3);
+  outline-offset: -7px;
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  padding: 0.75rem 1.6rem;
+  background: linear-gradient(180deg, #a1122f, var(--color-primary));
+  color: #f6ead0;
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.18), 0 4px 0 #4d0013, 0 8px 16px rgba(0, 0, 0, 0.35);
+}
+.btn:hover { background: var(--gold); color: #121212; text-shadow: none; transform: translateY(-2px); }
+.btn:active { transform: translateY(2px); box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.18), 0 1px 0 #4d0013; }
+.btn:disabled:hover {
+  background: linear-gradient(180deg, #a1122f, var(--color-primary));
+  color: #f6ead0;
+  transform: none;
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--color-secondary);
+  border: 1px solid var(--color-secondary);
+  box-shadow: none;
+  text-shadow: none;
+}
+.btn--outline:hover { background: var(--color-secondary); color: #f6ead0; }
+.section--noche .btn--outline,
+.hero .btn--outline,
+.modal .btn--outline { color: var(--gold); border-color: var(--gold); }
+.section--noche .btn--outline:hover,
+.hero .btn--outline:hover,
+.modal .btn--outline:hover { background: var(--gold); color: #121212; }
+
+/* ---------- Cartelera ---------- */
+.filtros { justify-content: center; }
+.chip {
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  background: transparent;
+  color: var(--color-secondary);
+  border: 1px solid var(--color-secondary);
+}
+.chip:hover { background: rgba(128, 0, 32, 0.1); }
+.chip.is-active { background: var(--color-primary); color: #f6ead0; border-color: var(--gold); }
+
+.obra__poster { border: 3px double var(--gold); }
+.obra__poster::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  pointer-events: none;
+}
+.obra__genero { background: var(--gold); color: #121212; font-family: var(--font-title); }
+
+.section--papel .funciones li { background: rgba(128, 0, 32, 0.07); border-color: rgba(128, 0, 32, 0.35); }
+.section--papel details { border-top-color: rgba(60, 30, 10, 0.25); }
+
+/* ---------- Mapa de sillas: diferenciación por zona ---------- */
+.reserva__mapa {
+  background: radial-gradient(ellipse at 50% 0%, #4a0a1a 0%, #1a0a0e 70%);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+.seat[data-zona="vip"]    { --zona-color: var(--zona-vip); }
+.seat[data-zona="platea"] { --zona-color: var(--zona-platea); }
+.seat[data-zona="balcon"] { --zona-color: var(--zona-balcon); }
+.seat--disponible { background: var(--zona-color, var(--seat-available)); }
+.seat--disponible:hover { filter: brightness(1.25); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55); }
+
+.zona-titulo {
+  width: 100%;
+  margin: 0.9rem 0 0.2rem;
+  text-align: center;
+  font-family: var(--font-script);
+  font-size: 1.7rem;
+  line-height: 1;
+}
+.zona-titulo:first-child { margin-top: 0; }
+.zona-titulo[data-zona="vip"]    { color: #ff7b9c; }
+.zona-titulo[data-zona="platea"] { color: #6fcf97; }
+.zona-titulo[data-zona="balcon"] { color: #7fb2ee; }
+
+.tooltip-butaca {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 300;
+  padding: 0.45rem 0.8rem;
+  background: #0d0d0d;
+  color: #f6ead0;
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+}
+.tooltip-butaca[hidden] { display: none; }
+.tooltip-butaca[data-zona="vip"]    { border-left: 4px solid var(--zona-vip); }
+.tooltip-butaca[data-zona="platea"] { border-left: 4px solid var(--zona-platea); }
+.tooltip-butaca[data-zona="balcon"] { border-left: 4px solid var(--zona-balcon); }
+
+/* ---------- Reseñas con reserva obligatoria ---------- */
+.resena__aviso {
+  padding: var(--space-sm) var(--space-md);
+  margin: var(--space-md) 0;
+  border-left: 4px solid var(--gold);
+  background: rgba(128, 0, 32, 0.3);
+  border-radius: 4px;
+}
+.campo input:disabled,
+.campo select:disabled,
+.campo textarea:disabled { opacity: 0.5; cursor: not-allowed; }
+.campo input[readonly] { opacity: 0.85; border-style: dashed; }
+
+/* ---------- Mis reservas y talleres sobre papel ---------- */
+.section--papel .reservas-vacio { border-color: rgba(60, 30, 10, 0.35); }
+.section--papel .taller__datos { border-color: rgba(60, 30, 10, 0.35); }
+.section--papel .barra { background: #d8c6a0; }
+.section--papel .taller.is-agotado .taller__cupos { color: #a4161a; }
+.section--papel .convocatoria {
+  background: repeating-linear-gradient(135deg, rgba(128, 0, 32, 0.06) 0 12px, transparent 12px 24px), #f8f0dc;
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  background: #0a0a0a var(--grain);
+  border-top: 1px solid var(--gold);
+  box-shadow: inset 0 4px 0 var(--color-primary);
+  padding-block: var(--space-xl) var(--space-lg);
+}
+.footer__logo { font-family: var(--font-script); font-size: 3.4rem; line-height: 1; color: var(--gold); }
+.footer__lema { margin: 0.5rem 0 1.5rem; font-family: var(--font-title); font-style: italic; color: var(--color-text-muted); }
+.footer__nav { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-md) var(--space-lg); margin-bottom: var(--space-lg); }
+.footer__nav a { font-family: var(--font-title); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.14em; color: #f6ead0; }
+.footer__copy { padding-top: var(--space-md); border-top: 1px solid rgba(212, 175, 55, 0.25); font-size: 0.8rem; color: var(--color-text-muted); }
+
+/* ---------- Móvil y movimiento reducido ---------- */
+@media (max-width: 600px) {
+  .hero > .container { padding-inline: 3rem; }
+  .chispa { display: none; }
+  .site-title { font-size: 2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chispa { animation: none; opacity: 0.6; }
+  .site-header { transition: none; }
+}
