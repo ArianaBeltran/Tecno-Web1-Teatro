@@ -4,7 +4,7 @@ Proyecto 4 · Tecnologías Web I · Universidad Católica Boliviana
 
 Portal de la Compañía de Teatro UCB para difusión de cartelera, reserva de butacas y archivo histórico.
 
-🔗 **Demo:** https://TU_USUARIO.github.io/teatro-ucb/
+🔗 **Demo:** https://ArianaBeltran.github.io/teatro-ucb/
 
 ## Requerimientos funcionales
 | RF | Módulo | Implementación |
@@ -34,6 +34,14 @@ teatro-ucb/
 
 ## Ejecución local
 Abrir con la extensión **Live Server** de VS Code.
+
+## Configuración de Supabase
+1. Crea un proyecto en Supabase.
+2. Ejecuta `schema.sql` en el SQL Editor.
+3. Copia Project URL y la clave pública `anon` desde la configuración del proyecto.
+4. Sustituye `TU_SUPABASE_URL` y `TU_SUPABASE_ANON_KEY` en `js/database.js`.
+
+Sin esa configuración, el sitio continúa funcionando con almacenamiento local como respaldo.
 
 ## Autora
 Ilsen Ariana Beltrán Soliz

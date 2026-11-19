@@ -384,7 +384,19 @@ const CLAVE_TICKETS = 'teatroUCB.tickets';
 function renderMisReservas() {
   const lista = $('#mis-reservas-lista');
   if (!lista) return;
-  const tickets = leerStorage(CLAVE_TICKETS, []);
+  if (window.TeatroDatabase?.configured) {
+    window.TeatroDatabase.obtenerMisReservas().then((ticketsRemotos) => {
+      if (ticketsRemotos.length > 0) renderTickets(ticketsRemotos);
+      else renderTickets([]);
+    }).catch(() => renderTickets([]));
+    return;
+  }
+  renderTickets([]);
+}
+
+function renderTickets(tickets) {
+  const lista = $('#mis-reservas-lista');
+  if (!lista) return;
   lista.replaceChildren();
 
   if (tickets.length === 0) {
@@ -423,17 +435,19 @@ function guardarTicket(ticket) {
   actualizarFormResena();
 }
 
-function cancelarTicket(codigo) {
-  const tickets = leerStorage(CLAVE_TICKETS, []);
-  const ticket = tickets.find((t) => t.codigo === codigo);
-  if (!ticket) return;
+async function cancelarTicket(codigo) {
   if (!confirm(`¿Cancelar la reserva ${codigo}? Las butacas quedarán libres.`)) return;
 
-  const reservas = leerStorage(CLAVE_RESERVAS, {});
-  reservas[ticket.funcionId] = (reservas[ticket.funcionId] || []).filter((id) => !ticket.asientos.includes(id));
-  guardarStorage(CLAVE_RESERVAS, reservas);
-  guardarStorage(CLAVE_TICKETS, tickets.filter((t) => t.codigo !== codigo));
-  guardarStorage(CLAVE_RESENAS, leerStorage(CLAVE_RESENAS, []).filter((r) => r.codigo !== codigo));
+  if (window.TeatroDatabase?.configured) {
+    const resultado = await window.TeatroDatabase.cancelarReserva(codigo);
+    if (!resultado.ok) {
+      toast(`No se pudo cancelar: ${resultado.error}`, true);
+      return;
+    }
+  } else {
+    toast('Supabase no está configurado.', true);
+    return;
+  }
 
   renderMisReservas();
   renderResenas();
@@ -502,6 +516,7 @@ const BUTACAS_POR_FILA = 12;
 const MAX_SELECCION = 6;
 const CLAVE_RESERVAS = 'teatroUCB.reservas';
 const CLAVE_SELECCION = 'teatroUCB.seleccion';
+const ocupadasSupabase = new Map();
 
 const FILAS = [
   ...['A', 'B'].map((letra) => ({ letra, zona: 'Platea VIP', clave: 'vip', precio: 80 })),
@@ -557,7 +572,16 @@ function butacasOcupadas(funcionId) {
   });
   const guardadas = leerStorage(CLAVE_RESERVAS, {})[funcionId] || [];
   guardadas.forEach((id) => ocupadas.add(id));
+  (ocupadasSupabase.get(funcionId) || []).forEach((id) => ocupadas.add(id));
   return ocupadas;
+}
+
+async function actualizarOcupadasSupabase(funcionId) {
+  if (!window.TeatroDatabase?.configured || !funcionId) return;
+  const ocupadas = await window.TeatroDatabase.obtenerButacasOcupadas(funcionId);
+  ocupadasSupabase.set(funcionId, [...ocupadas]);
+  renderMapa();
+  actualizarResumen();
 }
 
 /* --- Datos de butacas --- */
@@ -641,6 +665,7 @@ function cambiarFuncion() {
   mostrarEstado('');
   renderMapa();
   actualizarResumen();
+  actualizarOcupadasSupabase(reserva.funcionId);
 }
 
 function seleccionarObraPorNombre(nombre) {
@@ -788,7 +813,7 @@ function validarNombre() {
 }
 
 /* --- Confirmación --- */
-function confirmarReserva(evento) {
+async function confirmarReserva(evento) {
   evento.preventDefault();
 
   if (!reserva.funcionId || reserva.seleccion.size === 0) {
@@ -801,18 +826,27 @@ function confirmarReserva(evento) {
   const asientos = [...reserva.seleccion].sort(ordenarButacas);
   const total = asientos.reduce((suma, id) => suma + infoButaca(id).precio, 0);
 
-  const reservas = leerStorage(CLAVE_RESERVAS, {});
-  reservas[reserva.funcionId] = [...(reservas[reserva.funcionId] || []), ...asientos];
-  guardarStorage(CLAVE_RESERVAS, reservas);
-
   const codigo = 'TUCB-' + hash(reserva.funcionId + asientos.join() + nombre + Date.now())
     .toString(36).toUpperCase().slice(0, 6);
 
-  guardarTicket({
-    codigo, funcionId: reserva.funcionId, obra: reserva.obra, funcion: reserva.funcion,
-    asientos, nombre, total, fecha: new Date().toISOString()
-  });
+  if (window.TeatroDatabase?.configured) {
+    const resultado = await window.TeatroDatabase.crearReserva({
+      funcionId: reserva.funcionId,
+      nombre,
+      codigo,
+      asientos
+    });
+    if (!resultado.ok) {
+      mostrarEstado(`No se pudo guardar la reserva: ${resultado.error}`, true);
+      return;
+    }
+  } else {
+    mostrarEstado('Supabase no está configurado.', true);
+    return;
+  }
+
   toast(`Reserva ${codigo} confirmada`);
+  renderMisReservas();
 
   reserva.seleccion.clear();
   guardarSeleccion();
