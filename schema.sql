@@ -75,7 +75,30 @@ create policy "Reserva publica" on public.reservas
 create policy "Reserva butacas publica" on public.reserva_butacas
   for insert with check (true);
 create policy "Cancelacion publica" on public.reservas
-  for update using (true) with check (estado in ('confirmada', 'cancelada'));
+  for update
+  using (true)
+  with check (estado = 'cancelada');
+
+create or replace function public.cancelar_reserva(p_codigo text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  v_actualizada integer;
+begin
+  update public.reservas
+  set estado = 'cancelada'
+  where codigo = p_codigo
+    and estado = 'confirmada';
+
+  get diagnostics v_actualizada = row_count;
+  return v_actualizada = 1;
+end;
+$$;
+
+grant execute on function public.cancelar_reserva(text) to anon, authenticated;
 
 insert into public.obras (nombre, genero, autor) values
   ('La casa de Bernarda Alba', 'tragedia', 'Federico García Lorca'),
@@ -145,7 +168,8 @@ create or replace function public.ocupar_butacas(
   p_numero integer
 ) returns uuid
 language plpgsql
-security invoker
+security definer
+set search_path = public, pg_temp
 as $$
 declare
   v_reserva_id uuid;
@@ -203,7 +227,8 @@ create or replace function public.resolver_funcion(
 ) returns uuid
 language sql
 stable
-security invoker
+security definer
+set search_path = public, pg_temp
 as $$
   select f.id
   from public.funciones f
@@ -218,3 +243,18 @@ as $$
 $$;
 
 grant execute on function public.resolver_funcion(text, timestamptz) to anon, authenticated;
+grant execute on function public.cancelar_reserva(text) to anon, authenticated;
+
+grant usage on schema public to anon, authenticated;
+grant select on table public.obras to anon, authenticated;
+grant select on table public.funciones to anon, authenticated;
+grant select on table public.butacas to anon, authenticated;
+grant select, insert, update on table public.reservas to anon, authenticated;
+grant select, insert on table public.reserva_butacas to anon, authenticated;
+
+alter function public.ocupar_butacas(uuid, text, text, text, integer)
+  security definer
+  set search_path = public, pg_temp;
+alter function public.resolver_funcion(text, timestamptz)
+  security definer
+  set search_path = public, pg_temp;

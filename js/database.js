@@ -3,7 +3,7 @@
 (function () {
   const CONFIG = {
     url: 'https://uahmisoeagczpymobvbx.supabase.co',
-    anonKey: 'sb_publishable_IVdvpTauhMJGVqmcOLHTmw__zApgO0g'
+    anonKey: 'sb_publishable_IyASQiq3eg8suAEFRJCGGw_8Q2f0o1Z'
   };
 
   const storageKey = 'teatroUCB.supabase.fallback';
@@ -152,11 +152,12 @@
     if (!client) {
       return { ok: false, error: 'Supabase no está configurado.' };
     }
-    const { error } = await client
-      .from('reservas')
-      .update({ estado: 'cancelada' })
-      .eq('codigo', codigo);
-    return error ? { ok: false, error: error.message } : { ok: true };
+    const { data, error } = await client.rpc('cancelar_reserva', {
+      p_codigo: codigo
+    });
+    if (error) return { ok: false, error: error.message };
+    if (data !== true) return { ok: false, error: 'No se encontró la reserva.' };
+    return { ok: true };
   }
 
   window.TeatroDatabase = {
